@@ -10,7 +10,7 @@ train_df.Embarked.fillna(train_df.Embarked.mode()[0], inplace=True)
 train_df.Cabin.fillna('UnKnow', inplace=True)
 # train_df.Age.fillna(train_df.Age.median(), inplace=True)
 
-# 特征选择
+# 特征工程
 # 提取船舱位置信息
 train_df.loc[:, 'Cabin'] = train_df.Cabin.apply(lambda x: x[0])
 # 船票号获取相同船票号的数量
@@ -57,10 +57,11 @@ for idx, rows in train_df.groupby(['Ticket']):
         survived = rows.drop(idx2).Survived.max()
         train_df.loc[(train_df.PassengerId == row.PassengerId), 'family_survived'] = 1
 
+train_df = train_df.drop(['PassengerId'], axis=1)
 train_df = pd.get_dummies(train_df)
 x = train_df.iloc[:, 2:]
 y = train_df.iloc[:, 1]
-clf = SVC(kernel='linear', C=20)
+clf = SVC(kernel='linear', C=1, gamma=1)
 sc = model_selection.cross_val_score(clf, x, y, scoring='accuracy')
 clf.fit(x, y)
 print(sc.mean())
