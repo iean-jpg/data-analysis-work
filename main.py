@@ -25,8 +25,8 @@ train_df['l_name'] = train_df.Name.apply(lambda x: x[x.find('.') + 1:])
 train_df['f_size'] = train_df.Parch + train_df.SibSp + 1
 # 对家庭成员进行分段
 train_df['f_size_type'] = 'a'
-train_df.loc[(train_df.f_size >= 2) & (train_df.f_size <= 4), 'f_size_type'] = 'b'
-train_df.loc[train_df.f_size > 4, 'f_size_type'] = 'c'
+train_df.loc[(train_df.f_size >= 4) & (train_df.f_size <= 5), 'f_size_type'] = 'b'
+train_df.loc[train_df.f_size > 5, 'f_size_type'] = 'c'
 # 对Age分段
 train_df['age_type'] = 'a'
 train_df.loc[(train_df.Age > 16) & (train_df.Age <= 30), 'age_type'] = 'b'
