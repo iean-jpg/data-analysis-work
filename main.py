@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn import model_selection
+from sklearn.feature_selection import SelectKBest
 from sklearn.svm import SVC
 
 train_df = pd.read_csv('./data/train.csv')
@@ -49,7 +50,7 @@ for idx, rows in train_df.groupby(['f_name', 'Fare']):
     for idx2, row in rows.iterrows():
         survived = rows.drop(idx2).Survived.max()
         train_df.loc[(train_df.PassengerId == row.PassengerId), 'family_survived'] = 1
-
+# Ticket 船票号，提取相同号的数量
 for idx, rows in train_df.groupby(['Ticket']):
     if len(rows) == 1:
         continue
@@ -57,11 +58,11 @@ for idx, rows in train_df.groupby(['Ticket']):
         survived = rows.drop(idx2).Survived.max()
         train_df.loc[(train_df.PassengerId == row.PassengerId), 'family_survived'] = 1
 
-train_df = train_df.drop(['PassengerId'], axis=1)
 train_df = pd.get_dummies(train_df)
-x = train_df.iloc[:, 2:]
+X = train_df.iloc[:, 2:]
 y = train_df.iloc[:, 1]
-clf = SVC(kernel='linear', C=1, gamma=1)
-sc = model_selection.cross_val_score(clf, x, y, scoring='accuracy')
-clf.fit(x, y)
+X = SelectKBest(k=1370).fit_transform(X, y)
+clf = SVC(kernel='linear', C=0.31)
+sc = model_selection.cross_val_score(clf, X, y, scoring='accuracy')
+clf.fit(X, y)
 print(sc.mean())
