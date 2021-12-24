@@ -1,9 +1,6 @@
 import pandas as pd
 from sklearn import model_selection
-from sklearn.ensemble import VotingClassifier, RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
-from sklearn.tree import DecisionTreeClassifier
 
 train_df = pd.read_csv('./data/train.csv')
 test_df = pd.read_csv('./data/test.csv')
@@ -63,12 +60,7 @@ for idx, rows in train_df.groupby(['Ticket']):
 train_df = pd.get_dummies(train_df)
 x = train_df.iloc[:, 2:]
 y = train_df.iloc[:, 1]
-clf = DecisionTreeClassifier()
-clf2 = RandomForestClassifier()
-clf3 = SVC(kernel='linear', C=10)
-clf4 = LogisticRegression(max_iter=5000, C=0.2)
-vlf = VotingClassifier([('clf1', clf), ('clf2', clf2), ('clf3', clf3), ('clf4', clf4)])
-sc = model_selection.cross_val_score(clf3, x, y, scoring='accuracy')
-clf3.fit(x, y)
+clf = SVC(kernel='linear', C=20)
+sc = model_selection.cross_val_score(clf, x, y, scoring='accuracy')
+clf.fit(x, y)
 print(sc.mean())
-print(clf3.score(x, y))
